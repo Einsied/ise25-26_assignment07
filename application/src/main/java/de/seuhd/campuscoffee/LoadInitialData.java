@@ -23,14 +23,12 @@ import java.util.List;
 class LoadInitialData implements InitializingBean {
     private final PosService posService;
     private final UserService userService;
-    //private final ReviewService reviewService;
-
-    // TODO: Uncomment review-related code once the interfaces and services have been implemented.
+    private final ReviewService reviewService;
 
     @Override
     public void afterPropertiesSet() {
         log.info("Deleting existing data...");
-        //reviewService.clear();
+        reviewService.clear();
         posService.clear();
         userService.clear();
         log.info("Loading initial data...");
@@ -38,8 +36,8 @@ class LoadInitialData implements InitializingBean {
         log.info("Created {} users.", userFixtures.size());
         List<Pos> posFixtures = TestFixtures.createPosFixtures(posService);
         log.info("Created {} POS.", posFixtures.size());
-        //List<Review> reviewFixtures = TestFixtures.createReviewFixtures(reviewService);
-        //log.info("Created {} reviews.", reviewFixtures.size());
+        List<Review> reviewFixtures = TestFixtures.createReviewFixtures(reviewService);
+        log.info("Created {} reviews.", reviewFixtures.size());
         log.info("Initial data loaded successfully.");
     }
 }
