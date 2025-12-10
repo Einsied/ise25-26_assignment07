@@ -7,8 +7,10 @@ import de.seuhd.campuscoffee.api.openapi.CrudOperation;
 import de.seuhd.campuscoffee.domain.model.objects.Review;
 import de.seuhd.campuscoffee.domain.ports.api.CrudService;
 import de.seuhd.campuscoffee.domain.ports.api.ReviewService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
@@ -35,12 +37,12 @@ public class ReviewController extends CrudController<Review, ReviewDto, Long> {
 
     @Override
     protected @NonNull CrudService<Review, Long> service() {
-        return null;
+        return reviewService;
     }
 
     @Override
     protected @NonNull DtoMapper<Review, ReviewDto> mapper() {
-        return null;
+        return reviewDtoMapper;
     }
 
     @Operation
@@ -56,7 +58,7 @@ public class ReviewController extends CrudController<Review, ReviewDto, Long> {
     public @NonNull ResponseEntity <ReviewDto> getById (
             @Parameter(description="Unique identifier of the review to retrieve.", required=true)
             @PathVariable Long id) {
-                return super.getById();
+                return super.getById(id);
     }
 
     @Operation
@@ -96,19 +98,20 @@ public class ReviewController extends CrudController<Review, ReviewDto, Long> {
         @RequestParam ("approved") Boolean approved
     ) {
         return ResponseEntity.ok(
-            reviewDtoMapper.fromDomain(reviewService.filter(posId, approved))
+            reviewService.filter(posId, approved).stream()
+            .map(reviewDtoMapper::fromDomain).toList()
         );
     }
 
     @Operation
-    @CrudOperation(operation=APPROVE, resource=REVIEW)
+    @CrudOperation(operation=UPDATE, resource=REVIEW)
     @PostMapping("/approve")
     public ResponseEntity <ReviewDto> approve (
         @PathVariable Long id ,
         @RequestParam("user_id") Long userId
     ) {
         return ResponseEntity.ok(
-            reviewDtoMapper.fromDomain(approve(reviewService.getById(id), userId))
+            reviewDtoMapper.fromDomain(reviewService.approve(reviewService.getById(id), userId))
         );
     }
 }
