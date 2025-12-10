@@ -2,7 +2,11 @@ package de.seuhd.campuscoffee.api.mapper;
 
 import de.seuhd.campuscoffee.api.dtos.ReviewDto;
 import de.seuhd.campuscoffee.domain.model.objects.Review;
+import de.seuhd.campuscoffee.domain.ports.api.PosService;
+import de.seuhd.campuscoffee.domain.ports.api.UserService;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 
 /**
